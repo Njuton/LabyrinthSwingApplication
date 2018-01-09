@@ -2,6 +2,8 @@
 
 **Стэк технологий:** Java 7, Java Swing, Apache Maven
 
+![Image alt](https://github.com/Njuton/LabyrinthSwingApplication/blob/master/anim.gif)
+
 ### Поддерживаемые возможности:
 ------------
 - Задание числа строк и столбцов таблицы лабиринта. В случае размерностей больше 10x10 клеток возможна прокрутка.
