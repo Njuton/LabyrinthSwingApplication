@@ -74,7 +74,7 @@ public class TopPanelController implements ActionListener {
 			
 			slp.repaintScrollGrid(labyrinth.length, labyrinth[0].length);
 			slp.getLabyrinthPanel().getModel().updateStates(labyrinth);
-			slp.getLabyrinthPanel().getModel().setSetDefaultIcon(1);
+			slp.getLabyrinthPanel().getModel().setSetDefaultIcon(2);
 		}
 	}
 
