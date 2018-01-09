@@ -1,3 +1,4 @@
-target/
-labyrinths/
-resized_img/
+target/*
+!target/Labyrinth.exe
+labyrinths
+resized_img
