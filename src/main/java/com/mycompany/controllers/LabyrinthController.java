@@ -43,21 +43,6 @@ public class LabyrinthController extends ComponentAdapter implements ActionListe
 		int height = btn.getHeight();
 
 		try {
-			// создание папки "labyrinths" в корневом каталоге
-			File pathToLab = new File("labyrinths");
-			if (!pathToLab.exists())
-				pathToLab.mkdir();
-
-			// заполнение папки "labyrinths" файлами, размещенными в каталогах-ресурсах
-			// (размещаются
-			// в jar-архиве, являются статичными, т.е. загружаются 1 раз JVM, используются
-			// exe.
-
-			FileUtils.copyInputStreamToFile(ClassLoader.getSystemResource("labyrinths/lab1").openStream(),
-					new File("labyrinths/lab1"));
-
-			FileUtils.copyInputStreamToFile(ClassLoader.getSystemResource("labyrinths/lab2").openStream(),
-					new File("labyrinths/lab2"));
 
 			// создание папки "resized_img" для хранения перезаписываемых изображений
 			// (меняется размер при каждом обновлении таблицы)
@@ -97,6 +82,23 @@ public class LabyrinthController extends ComponentAdapter implements ActionListe
 				
 				// если программа запускается впервые => загрузить стандартный лабиринт из файла
 				if (model.getSetDefaultIcon() == 3) {
+					
+					// создание папки "labyrinths" в корневом каталоге
+					File pathToLab = new File("labyrinths");
+					if (!pathToLab.exists())
+						pathToLab.mkdir();
+
+					// заполнение папки "labyrinths" файлами, размещенными в каталогах-ресурсах
+					// (размещаются
+					// в jar-архиве, являются статичными, т.е. загружаются 1 раз JVM, используются
+					// exe.
+
+					FileUtils.copyInputStreamToFile(ClassLoader.getSystemResource("labyrinths/lab1").openStream(),
+							new File("labyrinths/lab1"));
+
+					FileUtils.copyInputStreamToFile(ClassLoader.getSystemResource("labyrinths/lab2").openStream(),
+							new File("labyrinths/lab2"));
+					
 					File openFile = new File("labyrinths/lab1");
 					if (openFile != null) {
 
