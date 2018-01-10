@@ -69,13 +69,16 @@ public class View extends JFrame{
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenuItem jmi = new JMenuItem("О программе");
+		
+		final String text = "<html>Графическая программа поиска кратчайшего пути в лабиринте для двух заданных точек.<br>" +
+				  "Используется алгоритм A-Star с махеттенской функцией оценки расстояния от текущей клетки до целевой.<br>" +
+				  "В качестве окрестности клетки взята окрестность Фон-Неймана.<br><br>" +
+		          "<div style='text-align:center;'>Автор: Мартынов Роман, 2018 г.</div></html>";
+		
 		jmi.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String text = "<html>Графическая программа поиска кратчайшего пути в лабиринте для двух заданных точек.<br>" +
-							  "Используется алгоритм A-Star.<br><br>" + 
-					          "<div style='text-align:center;'>Автор: Мартынов Роман, 2018 г.</div></html>";
 				JOptionPane.showMessageDialog(null, text, "О программе", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
@@ -89,6 +92,8 @@ public class View extends JFrame{
 		setMinimumSize(new Dimension(700,750));
 		setVisible(true);
 		toFront();
+		
+		JOptionPane.showMessageDialog(null, text, "О программе", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 }

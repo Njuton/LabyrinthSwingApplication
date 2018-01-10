@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.swing.JButton;
+
 /**
  * Реализация алгоритма поиска кратчайшего пути на графе - A* (A-Star).
  * 
@@ -20,8 +22,8 @@ class Node {
 	
 	// значения функций
 	private int g;
-	private double h;
-	private double f;
+	private int h;
+	private int f;
 	
 	// родительский узел
 	private Node parent;
@@ -64,19 +66,19 @@ class Node {
 		this.g = g;
 	}
 
-	public double getH() {
+	public int getH() {
 		return h;
 	}
 
-	public void setH(double h) {
+	public void setH(int h) {
 		this.h = h;
 	}
 
-	public double getF() {
+	public int getF() {
 		return f;
 	}
 
-	public void setF(double f) {
+	public void setF(int f) {
 		this.f = f;
 	}
 
@@ -152,23 +154,10 @@ public class AStar implements Navigator{
 	 * 
 	 * @param cx - координата x текущего узла
 	 * @param cy - координата y текущего узла
-	 * @param bx - координата x конечного узла
-	 * @param by - координата y конечного узлна
-	 * @param type - тип эвристики
 	 */
-	 private double heuristic_cost_estimate(int cx, int cy, int bx, int by, int type) {
+	 private int heuristic_cost_estimate(int cx, int cy) {
 		 
-		switch (type) {
-			// расстояние Чебышева
-			case 0: 
-				return Math.max(Math.abs(cx - bx), Math.abs(cy - by));
-			// манхэттенское расстояние
-			case 1:
-				return Math.abs(cx - bx) + Math.abs(cy - by);
-			// евклидово расстояние
-			default:
-				return Math.sqrt(Math.pow(Math.abs(cx - bx), 2) + Math.pow(Math.abs(cy - by), 2));
-		}
+		 return Math.abs(cx - bx) + Math.abs(cy - by);
 	}
 	
 	/**
@@ -182,7 +171,7 @@ public class AStar implements Navigator{
 		
 		// инициализируем стартовый узел
 		start.setG(0);
-		start.setH(heuristic_cost_estimate(ax, ay, bx, by, 1));
+		start.setH(heuristic_cost_estimate(ax, ay));
 		start.setF(start.getH());
 		
 		openSet.offer(start);
@@ -222,8 +211,8 @@ public class AStar implements Navigator{
 					
 					if (!openSet.contains(neig)) {
 						neig.setG(tentative_g_score);
-						neig.setH(heuristic_cost_estimate(neig.getX(), neig.getY(), bx, by, 1));
-						neig.setF(neig.getH() + neig.getF());
+						neig.setH(heuristic_cost_estimate(neig.getX(), neig.getY()));
+						neig.setF(neig.getH() + neig.getG());
 						neig.setParent(current);
 						openSet.offer(neig);
 					}
@@ -238,7 +227,7 @@ public class AStar implements Navigator{
 						if (tentative_g_score < neig.getG()) {
 							openSet.remove(neig);
 							neig.setG(tentative_g_score);
-							neig.setF(neig.getH() + neig.getF());
+							neig.setF(neig.getH() + neig.getG());
 							neig.setParent(current);
 							openSet.offer(neig);
 						}
@@ -282,20 +271,17 @@ public class AStar implements Navigator{
 	
 	/**
 	 * Этап 3 - восстановление пути
-	 * Изменяет текущий массив (отмечает плюсиками путь)
 	 */
 	
 	private void reconstruct_path(char[][] map) {
 		Node current = goal;
 		
 		while(current.getParent() != null) {
-			map[current.getY()][current.getX()] = Constants.PATH;
 			current = current.getParent();
+			map[current.getY()][current.getX()] = Constants.PATH;
 		}
 		
-		map[ay][ax] = Constants.START;
-		map[by][bx] = Constants.FINISH;
-		
+		map[ay][ax] = Constants.START;	
 	}
 	
 	@Override
@@ -309,29 +295,13 @@ public class AStar implements Navigator{
 		boolean flag = algorithm();
 		
 		if (flag){
-			reconstruct_path(map);
-			return map;
-		}
-		
-		return null;
-	}
-	
-	public static void main(String[] args) {
-		char[][] map = {{'@','.'},{'.', 'X'}};
-		
-		Navigator navigator = new AStar();
-		char[][] result = navigator.searchRoute(map);
-		
-		if (result != null) {
-		
-		for(int i = 0; i < result.length; i++)
-		{
-			for (int j = 0; j < result[0].length; j++) {
-				System.out.print(result[i][j]);
-				System.out.print(" ");
+			char[][] tmp = new char[map.length][];
+			for (int i = 0; i < map.length; i++) {
+				tmp[i] = map[i].clone();
 			}
-			System.out.println();
+			reconstruct_path(tmp);
+			return tmp;
 		}
-		}
+		return null;
 	}
 }

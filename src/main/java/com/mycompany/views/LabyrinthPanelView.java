@@ -113,7 +113,5 @@ public class LabyrinthPanelView extends JPanel{
 	public LabyrinthModel getModel() {
 		return model;
 	}
-	
-	
-	
+
 }
