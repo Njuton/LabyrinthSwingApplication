@@ -53,7 +53,7 @@ public class LabyrinthPanelView extends JPanel{
 		
 	}
 	
-	/** перерисовка панели при создании таблицы */
+	/** перерисовка панели при создании таблицы или загрузке лабиринта */
 	public void repaintGrid(int width, int height) {
 		int oldHeight = model.getHeight();
 		int oldWidth = model.getWidth();

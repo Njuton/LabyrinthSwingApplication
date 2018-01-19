@@ -72,6 +72,10 @@ public class TopPanelController implements ActionListener {
 			for (int i = 0; i < charArray.size(); i++)
 				labyrinth[i] = charArray.get(i);
 			
+			// установка новых картинок происходит в методе resize(), поэтому
+			// для генерации события, чтобы запустился resize()
+			// применяется перерисовка панели 
+			
 			slp.repaintScrollGrid(labyrinth.length, labyrinth[0].length);
 			slp.getLabyrinthPanel().getModel().updateStates(labyrinth);
 			slp.getLabyrinthPanel().getModel().setSetDefaultIcon(2);
