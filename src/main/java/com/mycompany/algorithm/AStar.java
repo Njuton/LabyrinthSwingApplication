@@ -1,10 +1,8 @@
 package com.mycompany.algorithm;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 
 /**
  * <h3>Реализация алгоритма поиска кратчайшего пути на графе - A* (A-Star).</h3>
@@ -35,39 +33,21 @@ public class AStar implements Navigator{
 		int g;
 		int h;
 		int f;
-
+		
+		// true - если Node находится в openSet
+		boolean inOpenSet;
+		
+		// true - если Node находится в closedSet
+		// closedSet - коллекция узлов, которых мы исключили из дальнейшего просмотра;
+		// все соседи внесены в OpenSet
+		boolean inClosedSet;
+	
 		// родительский узел
 		Node parent;
 
 		public Node(int x, int y) {
 			this.x = x;
 			this.y = y;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-
-			if (obj == this)
-				return true;
-
-			if (obj == null || !(obj instanceof Node))
-				return false;
-
-			Node node = (Node) obj;
-
-			if (node.x == x && node.y == y)
-				return true;
-			else
-				return false;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = 1;
-			int prime = 31;
-			result = prime * result + x;
-			result = prime * result + y;
-			return result;
 		}
 	}
 
@@ -78,7 +58,7 @@ public class AStar implements Navigator{
 	// openSet - коллекция узлов, у которых заполнены поля и которые могут быть
 	// нам интересны в дальейшем; соседи не внесены в openSet
 	// poll будет извлекать узел с наименьшим значением функции f;
-	// offer за O(logn), contains - O(n), poll - O(1)
+	// offer(), poll() - O(logn), remove(Object) - O(n)
 
 	private Queue<Node> openSet = new PriorityQueue<Node>(new Comparator<Node>() {
 
@@ -91,12 +71,6 @@ public class AStar implements Navigator{
 			return 0;
 		}
 	});
-
-	// closedSet - коллекция узлов, которых мы исключили из дальнейшего просмотра;
-	// все соседи внесены в OpenSet
-	// add, contains за O(1)
-
-	private Set<Node> closeSet = new HashSet<Node>();
 
 	// смещение для соседних ячеек (правая, нижняя, левая, левая ячейки)
 	private int dx[] = { 1, 0, -1, 0 };
@@ -140,7 +114,7 @@ public class AStar implements Navigator{
 				switch (map[y][x]) {
 
 				case Constants.WALL:
-					closeSet.add(lab[y][x]);
+					lab[y][x].inClosedSet = true;
 					break;
 
 				case Constants.START:
@@ -168,20 +142,22 @@ public class AStar implements Navigator{
 		start.g = 0;
 		start.h = heuristic_cost_estimate(ax, ay);
 		start.f = start.h;
+		start.inOpenSet=true;
 
 		openSet.offer(start);
 
 		while (!openSet.isEmpty()) {
 			// извлекаем узел с наименьшим значением F
 			Node current = openSet.poll();
+			current.inOpenSet=false;
 
 			// если текущий узел конечный, завершаем работу
 			if (current.x == bx && current.y == by) {
 				goal = current;
 				return true;
 			}
-
-			closeSet.add(current);
+			
+			current.inClosedSet = true;
 
 			// по всем соседям
 			for (int t = 0; t < 4; t++) {
@@ -195,19 +171,20 @@ public class AStar implements Navigator{
 
 					Node neig = lab[neigy][neigx];
 
-					// если сосед находится в закрытом списке => переходим к другому соседу
-					if (closeSet.contains(neig))
+					// если сосед находится в closedSet => переходим к другому соседу
+					if (neig.inClosedSet)
 						continue;
 
 					// вычисляем g(x) для обрабатываемого соседа
 					int tentative_g_score = current.g + v;
 
 					// если соседа нет в openSet => добавляем его
-					if (!openSet.contains(neig)) {
+					if (!neig.inOpenSet) {
 						neig.g = tentative_g_score;
 						neig.h = heuristic_cost_estimate(neig.x, neig.y);
 						neig.f = neig.g + neig.h;
 						neig.parent = current;
+						neig.inOpenSet=true;
 						openSet.offer(neig);
 					}
 					else {
@@ -270,6 +247,5 @@ public class AStar implements Navigator{
 			return tmp;
 		}
 		return null;
-	}
-	
+	}	
 }
